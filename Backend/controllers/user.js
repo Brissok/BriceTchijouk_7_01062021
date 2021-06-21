@@ -1,7 +1,7 @@
-const User = require('../models/User');
 const cryptoJS = require('crypto-js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { sequelize, User } = require('../models');
 
 exports.signup = async (req, res, next) => {
     const users = await User.find();
@@ -79,4 +79,15 @@ exports.login = async (req, res, next) => {
     } else {
         return res.status(401).json({ message: 'Utilisateur non trouvé !' });
     }
-}
+};
+
+exports.postUser = async(req, res) => {
+    const { email, username, password, isAdmin } = req.body;
+    try{
+      const user = await User.create({ email, username, password, isAdmin });
+      return res.json(user);
+    } catch(err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  };
