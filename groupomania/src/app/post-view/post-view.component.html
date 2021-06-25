@@ -1,10 +1,8 @@
-<div class="col-xs-12">
-    <h2>Mes posts</h2>
-    <ul class="list-group">
-      <app-post *ngFor="let post of posts; let i = index"
-                [indexOfPost]="i" [postTitle]="post.title" [postContent]="post.content" [id]="post.id">
-      </app-post>
-    </ul>
-    <button class="btn btn-danger" (click)="onToutRouge()">Tout rouge</button>
-    <button class="btn btn-success" (click)="onToutVert()">Tout vert</button>
-  </div>
+<a routerLink="/new-post">Nouveau message</a>
+<ul class="list-group">
+  <li class="list-group-item" *ngFor="let post of posts">
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.content }}</p>
+    <span>Likes : {{ post.likes }}</span>
+  </li>
+</ul>

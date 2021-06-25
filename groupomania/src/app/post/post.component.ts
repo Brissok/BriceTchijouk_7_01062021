@@ -12,7 +12,7 @@ export class PostComponent {
   @Input() postTitle: string;
   @Input() postContent: string;
   @Input() indexOfPost: number;
-  @Input() id: number;
+  @Input() id: string;
 
   lastUpdate = new Date();
 
@@ -31,13 +31,5 @@ export class PostComponent {
     } else if(this.postContent === 'rouge') {
       return 'red';
     } 
-  }
-
-  onSwitchRed() {
-    this.postService.switchRedOne(this.indexOfPost);
-  }
-
-  onSwitchGreen() {
-    this.postService.switchGreenOne(this.indexOfPost);
   }
 }

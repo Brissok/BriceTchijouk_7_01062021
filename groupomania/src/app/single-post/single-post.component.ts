@@ -17,8 +17,8 @@ export class SinglePostComponent implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.params['id'];
-    this.title = this.postService.getPostById(+id)!.title;
-    this.content = this.postService.getPostById(+id)!.content;       
+    this.title = this.postService.getPostById(id)!.title;
+    this.content = this.postService.getPostById(id)!.content;       
   }
 
 }

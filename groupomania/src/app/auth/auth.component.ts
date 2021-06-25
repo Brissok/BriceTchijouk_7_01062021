@@ -15,19 +15,7 @@ export class AuthComponent implements OnInit {
               private router: Router) {}
 
   ngOnInit() {
-    this.authStatus = this.authService.isAuth;
-  }
 
-  onSignIn() {
-    this.authService.signIn().then(() => {
-      this.authStatus = this.authService.isAuth;
-      this.router.navigate(['posts']);
-    });
-  }
-
-  onSignOut() {
-    this.authService.signOut();
-    this.authStatus = this.authService.isAuth;
   }
 
 }

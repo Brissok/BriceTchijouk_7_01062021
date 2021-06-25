@@ -1,5 +1,6 @@
 const http = require('http');
 const app = require('./app');
+const { sequelize } = require('./models');
 
 //Fonction renvoyant un port valide, qu'il soit fourni sous la forme d'un numéro ou d'une chaîne
 const normalizePort = val => {
@@ -40,10 +41,12 @@ const errorHandler = error => {
 const server = http.createServer(app);
 
 server.on('error', errorHandler);
-server.on('listening', () => {
+server.on('listening', async () => {
   const address = server.address();
   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
   console.log('Listening on ' + bind);
+/*   await sequelize.sync({ alter: true });
+  console.log('Database synced'); */
 });
 
 server.listen(port);
