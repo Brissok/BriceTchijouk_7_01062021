@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
@@ -19,6 +19,8 @@ import { LoginComponent } from './login/login.component';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth-guard.service';
 import { PostService } from './services/post.service';
+import { AuthInterceptor } from './interceptors/auth-interceptor';
+import { HeaderComponent } from './header/header.component';
 
 const appRoutes: Routes = [
   { path: 'posts', canActivate: [AuthGuard], component: PostViewComponent },
@@ -26,7 +28,7 @@ const appRoutes: Routes = [
   { path: 'new-post', canActivate: [AuthGuard], component: PostFormComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'login', component: LoginComponent },
-  { path: '', component: PostViewComponent },
+  { path: '', component: SignupComponent },
   { path: 'not-found', component: FourOhFourComponent },
   { path: '**', redirectTo: '/not-found' }
 ];
@@ -42,7 +44,8 @@ const appRoutes: Routes = [
     SinglePostComponent,
     FourOhFourComponent,
     PostFormComponent,
-    LoginComponent
+    LoginComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
@@ -53,6 +56,7 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     PostService,
     AuthService,
     AuthGuard
