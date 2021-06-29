@@ -7,46 +7,75 @@ import { Injectable } from "@angular/core";
 export class PostService {
 
   postSubject = new Subject<Post[]>();
-  private posts: Post[] = [
-    {
-      id: "feqkjgbeli",
-      title: "Hello World !",
-      content: "Bienvenue dans le réseau social Groupomania.",
-      likes: 1,
-      imageUrl: null,
-      usersLiked: ["cbhvbskdj"],
-      userId: "mlkjhg"
-    }
-  ];
+  private posts: Post[] = [];
+
   
-  constructor(private httpClient: HttpClient) {}
-     
-  emitPosts() {
-    this.postSubject.next(this.posts.slice());
-  }
+  constructor(private http: HttpClient) {}
 
-  addPost(post: Post) {
-    this.posts.push(post);
-    this.emitPosts();
-  }
-
-  getPostById(id: string) {
-    const post = this.posts.find((postObject) => {
-      return postObject.id === id;
-    });
-    return post;
-  }
-
-  createPost(post: Post) {
-    this.httpClient
-      .post('http://localhost:3000/posts', post)
-      .subscribe(
-        () => {
-          console.log('post enregistré !');
+  getPosts() {
+    this.http.get<any[]>('http://localhost:3000/posts').subscribe(
+      (posts: Post[]) => {
+        this.postSubject.next(posts);
       },
-        (error) => {
-          console.log("Erreur de sauvegarde !" + error);
+      (error) => {
+        this.postSubject.next([]);
+        console.error(error);
       }
     );
   }
+
+  getPostById(id: string) {
+    return new Promise<Post>((resolve, reject) => {
+      this.http.get<Post>('http://localhost:3000/posts/' + id).subscribe(
+        (post: Post) => {
+          resolve(post);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+  createPost(post: Post) {
+    return new Promise<any>((resolve, reject) => {
+      this.http.post<any>('http://localhost:3000/posts', post).subscribe(
+        (response: { message: string }) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+  modifyPost(id: string, post: Post) {
+    return new Promise<any>((resolve, reject) => {
+      const formData = new FormData();
+      formData.append('sauce', JSON.stringify(post));
+      this.http.put<any>('http://localhost:3000/api/posts/' + id, formData).subscribe(
+        (response: { message: string }) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+  deletePost(id: string) {
+    return new Promise((resolve, reject) => {
+      this.http.delete<any>('http://localhost:3000/posts/' + id).subscribe(
+        (response: { message: string }) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
 }

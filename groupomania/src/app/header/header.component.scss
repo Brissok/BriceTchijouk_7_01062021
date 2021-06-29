@@ -31,10 +31,6 @@ nav {
     flex-direction: column;
   }
   
-  .logo-text {
-    text-align: center;
-  }
-  
   .logo-image {
     img {
       height: 4.5em;
@@ -48,9 +44,7 @@ nav {
   }
   
   .right-nav {
-    ul {
-      justify-content: flex-end;
-    }
+    justify-content: flex-end;
   }
   
   ul {

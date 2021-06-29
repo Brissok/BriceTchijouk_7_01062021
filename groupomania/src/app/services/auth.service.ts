@@ -18,10 +18,10 @@ export class AuthService {
   
   createUser(firstName: string, lastName: string, fonction: string, email: string, password: string) {
     return new Promise((resolve, reject) => {
-      this.http.post('http://localhost:3000/auth/signup', {
+      this.http.post<any>('http://localhost:3000/auth/signup', {
         firstName: firstName, lastName: lastName, fonction: fonction, email: email, password: password})
         .subscribe(
-          (response) => {
+          (response: { message: string }) => {
             resolve(response);
           },
           (error) => {
@@ -41,11 +41,10 @@ export class AuthService {
 
   loginUser(email: string, password: string) {
     return new Promise<void>((resolve, reject) => {
-      this.http.post('http://localhost:3000/auth/login', {email: email, password: password}).subscribe(
-        (response) => {
-          let result = Object.keys(response);
-          this.userId = result[0];
-          this.authToken = result[1];
+      this.http.post<any>('http://localhost:3000/auth/login', {email: email, password: password}).subscribe(
+        (response: {userId: string, token: string}) => {
+          this.userId = response.userId;
+          this.authToken = response.token;
           this.isAuth$.next(true);
           resolve();
         },

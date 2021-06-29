@@ -15,17 +15,22 @@ import { FourOhFourComponent } from './four-oh-four/four-oh-four.component';
 import { PostFormComponent } from './post-form/post-form.component';
 import { SignupComponent } from './signup/signup.component';
 import { LoginComponent } from './login/login.component';
+import { HeaderComponent } from './header/header.component';
+import { ProfilComponent } from './profil/profil.component';
 
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth-guard.service';
 import { PostService } from './services/post.service';
+import { UserService } from './services/user.service';
+import { LinkService } from './services/link';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
-import { HeaderComponent } from './header/header.component';
 
 const appRoutes: Routes = [
   { path: 'posts', canActivate: [AuthGuard], component: PostViewComponent },
   { path: 'posts/:id', canActivate: [AuthGuard], component: SinglePostComponent },
   { path: 'new-post', canActivate: [AuthGuard], component: PostFormComponent },
+  { path: 'modify-sauce/:id', canActivate: [AuthGuard], component: PostFormComponent },
+  { path: 'profil', canActivate: [AuthGuard], component: ProfilComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'login', component: LoginComponent },
   { path: '', component: SignupComponent },
@@ -45,7 +50,8 @@ const appRoutes: Routes = [
     FourOhFourComponent,
     PostFormComponent,
     LoginComponent,
-    HeaderComponent
+    HeaderComponent,
+    ProfilComponent
   ],
   imports: [
     BrowserModule,
@@ -58,8 +64,10 @@ const appRoutes: Routes = [
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     PostService,
+    UserService,
     AuthService,
-    AuthGuard
+    AuthGuard,
+    LinkService
   ],
   bootstrap: [AppComponent]
 })

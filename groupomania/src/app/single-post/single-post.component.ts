@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Post } from '../models/Post.model';
 import { PostService } from '../services/post.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-single-post',
@@ -9,16 +11,44 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class SinglePostComponent implements OnInit {
 
-  title: string = 'Titre';
-  content: string = 'Contenu';
+  post: Post;
+  userId: string;
+  errorMsg: string;
 
   constructor(private postService: PostService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private auth: AuthService,
+              private router: Router) { }
 
   ngOnInit() {
-    const id = this.route.snapshot.params['id'];
-    this.title = this.postService.getPostById(id)!.title;
-    this.content = this.postService.getPostById(id)!.content;       
+    this.userId = this.auth.getUserId();
+    this.route.params.subscribe(
+      (params) => {
+        this.postService.getPostById(params.id)
+          .then((post: Post) => {
+            this.post.id = post.id;
+          }
+        );
+      }
+    );
+    this.userId = this.auth.getUserId();     
+  }
+
+  onModify() {
+    this.router.navigate(['/modify-post', this.post.id]);
+  }
+
+  onDelete() {
+    this.postService.deletePost(this.post.id)
+      .then((response) => {
+        console.log(response);
+        this.router.navigate(['/posts']);
+      }
+    ).catch((error) => {
+        this.errorMsg = error.message;
+        console.error(error);
+      }
+    );
   }
 
 }
