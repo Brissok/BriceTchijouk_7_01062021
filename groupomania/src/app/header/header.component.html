@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <nav>
     <div class="left-nav">
       <ul>
@@ -46,3 +47,57 @@
       </ul>
     </div>
   </nav>
+=======
+
+<div>
+  <div class="container">
+    <div class="row">
+      <nav class="col navbar navbar-expand-lg navbar-light">
+        <div class="logo">
+          <div class="logo-image">
+            <img src="../../assets/images/icon-left-font-r.png">
+          </div>
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="navbarContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="right-nav collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav">
+            <li class="nav-item" *ngIf="isAuth">
+              <a class="nav-link" routerLink="posts" routerLinkActive="active">
+                Tous les messages
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="isAuth">
+              <a class="nav-link" routerLink="new-post" routerLinkActive="active">
+                Nouveau message
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="isAuth">
+              <a class="nav-link" routerLink="profil" routerLinkActive="active">
+                Profil
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="!isAuth">
+              <a class="nav-link" routerLink="signup" routerLinkActive="active">
+                Inscription
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="!isAuth">
+              <a class="nav-link" routerLink="login" routerLinkActive="active">
+                Connexion
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="isAuth">
+              <a class="nav-link" (click)="onLogout()">
+                Déconnexion
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </div>
+</div>
+    
+>>>>>>> master

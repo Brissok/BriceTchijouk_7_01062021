@@ -1,4 +1,3 @@
-const cryptoJS = require('crypto-js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { sequelize, User } = require('../models');
@@ -11,8 +10,10 @@ exports.signup = async (req, res, next) => {
             bcrypt.hash(req.body.password, 10)
             .then(hash => {
                 const user = new User({
+                    firstName: req.body.firstName,
+                    lastName: req.body.lastName,
+                    fonction: req.body.fonction,
                     email: req.body.email,
-                    username: req.body.username,
                     password: hash,
                     isAdmin: false
                 });
@@ -51,4 +52,10 @@ exports.login = async (req, res, next) => {
         })
         .catch(error => res.status(500).json({ error }));
     }
+};
+
+exports.getOneUser = (req, res, next) => {
+    User.findOne({ _id: req.params.id })
+        .then(user => res.status(200).json(user))
+        .catch(error => res.status(404).json({ error }));
 };

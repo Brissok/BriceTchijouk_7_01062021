@@ -1,10 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { LinkService } from './services/link';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
 export class AppComponent {
-  title = 'groupomania';
+
+  constructor(private link: LinkService) {}
+
+  ngOnInit() {
+
+  }
+
 }

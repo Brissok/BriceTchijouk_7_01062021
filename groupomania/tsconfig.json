@@ -6,8 +6,15 @@
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+<<<<<<< HEAD
     "strictPropertyInitialization": false,
     "noImplicitReturns": true,
+=======
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "noImplicitReturns": false,
+    "noImplicitAny": false,
+>>>>>>> master
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
@@ -15,7 +22,7 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es2017",
     "module": "es2020",
     "lib": [
       "es2018",

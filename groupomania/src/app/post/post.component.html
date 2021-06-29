@@ -1,0 +1,7 @@
+<li [ngClass]="{'list-group-item': true, 'list-group-item-success': postContent === 'vert'}">
+    <h4 [ngStyle]="{color: getColor()}">Post: {{ postTitle }} -- Content : {{ getContent() }}</h4>
+    <p>{{ lastUpdate | date: 'medium' }}</p>
+    <a [routerLink]="[id]">Détail</a>
+    <button class="btn btn-success" [disabled]="postContent === 'vert'">Vert</button>
+    <button class="btn btn-danger" [disabled]="postContent === 'rouge'">Rouge</button>
+</li>
