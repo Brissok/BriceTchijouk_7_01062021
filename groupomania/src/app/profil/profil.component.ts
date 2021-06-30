@@ -14,28 +14,43 @@ export class ProfilComponent implements OnInit {
   isAuth = false;
 
   user: User;
-  userId: string;
+  userId: number;
+  errorMessage: string;
 
   constructor(private userService: UserService,
               private route: ActivatedRoute,
-              private auth: AuthService) {
+              private auth: AuthService,
+              private router: Router) {
 
   }
 
   ngOnInit() {
     this.userId = this.auth.getUserId();
     console.log(this.auth.getUserId());
-    this.route.params.subscribe(
-      (params) => {
-        this.userService.getUserById(params.id).then(
-          (response) => {
-            console.log(response);
-
-          }
-        );
+    this.userService.getUserById(this.userId).then(
+      (user: User) => {
+        console.log(user);
+        this.user = user;
       }
     );
-    this.userId = this.auth.getUserId();
+  }
+
+  onModify() {
+    this.router.navigate(['/modify-profil', this.user.id]);
+  }
+
+  onDelete() {
+    this.userService.deleteUser(this.user.id).then(
+      (response: { message: string }) => {
+        console.log(response.message);
+        this.auth.logout();
+      }
+    ).catch(
+      (error) => {
+        this.errorMessage = error.message;
+        console.error(error);
+      }
+    );
   }
 
 }

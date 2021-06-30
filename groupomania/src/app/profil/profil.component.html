@@ -1,7 +1,10 @@
-<ul class="list-group">
-    <p>Voici les informations de votre profil 1</p>
-    <li class="list-group-item">
-      <h3>{{ user?.firstName }}, {{ user?.lastName }}</h3>
-      <p>{{ user?.fonction }}</p>
-    </li>
-  </ul>
+<div class="profil-container">
+  <div class="profil-info">
+    <h1 class="profil-name">{{ user?.firstName }} {{ user?.lastName }}</h1>
+    <p class="fonction">{{ user?.fonction }}</p>
+    <div class="control-buttons">
+      <button class="btn btn-primary" (click)="onModify()" *ngIf="userId === user?.id">MODIFY</button>
+      <button class="btn btn-danger" (click)="onDelete()" *ngIf="userId === user?.id">DELETE</button>
+    </div>
+  </div>
+</div>

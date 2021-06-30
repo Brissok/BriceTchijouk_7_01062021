@@ -12,7 +12,7 @@ import { AuthService } from '../services/auth.service';
 export class SinglePostComponent implements OnInit {
 
   post: Post;
-  userId: string;
+  userId: number;
   errorMsg: string;
 
   constructor(private postService: PostService,

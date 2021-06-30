@@ -27,10 +27,36 @@ export class UserService {
     );
   }
 
-  getUserById(id: string) {
-    return new Promise((resolve, reject) => {
-      this.http.get<any>('http://localhost:3000/profil/' + id).subscribe(
+  getUserById(id: number) {
+    return new Promise<any>((resolve, reject) => {
+      this.http.get<any>('http://localhost:3000/auth/profil/' + id).subscribe(
         (response: User) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+  modifyUser(id: number, user: User) {
+    return new Promise<any>((resolve, reject) => {
+        this.http.put<any>('http://localhost:3000/auth/profil/' + id, user).subscribe(
+          (response: { message: string }) => {
+            resolve(response);
+          },
+          (error) => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  deleteUser(id: number) {
+    return new Promise<any>((resolve, reject) => {
+      this.http.delete<any>('http://localhost:3000/auth/profil/' + id).subscribe(
+        (response: { message: string }) => {
           resolve(response);
         },
         (error) => {

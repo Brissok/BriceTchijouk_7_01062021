@@ -10,7 +10,7 @@ export class AuthService {
 
   isAuth$ = new BehaviorSubject<boolean>(false);
   private authToken: string;
-  private userId: string;
+  private userId: number;
 
   constructor(private http: HttpClient,
               private router: Router) {}
@@ -42,7 +42,7 @@ export class AuthService {
   loginUser(email: string, password: string) {
     return new Promise<void>((resolve, reject) => {
       this.http.post<any>('http://localhost:3000/auth/login', {email: email, password: password}).subscribe(
-        (response: {userId: string, token: string}) => {
+        (response: {userId: number, token: string}) => {
           this.userId = response.userId;
           this.authToken = response.token;
           this.isAuth$.next(true);

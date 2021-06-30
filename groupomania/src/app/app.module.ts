@@ -17,6 +17,7 @@ import { SignupComponent } from './signup/signup.component';
 import { LoginComponent } from './login/login.component';
 import { HeaderComponent } from './header/header.component';
 import { ProfilComponent } from './profil/profil.component';
+import { ProfilFormComponent } from './profil-form/profil-form.component';
 
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth-guard.service';
@@ -25,11 +26,12 @@ import { UserService } from './services/user.service';
 import { LinkService } from './services/link';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
 
+
 const appRoutes: Routes = [
   { path: 'posts', canActivate: [AuthGuard], component: PostViewComponent },
   { path: 'posts/:id', canActivate: [AuthGuard], component: SinglePostComponent },
   { path: 'new-post', canActivate: [AuthGuard], component: PostFormComponent },
-  { path: 'modify-sauce/:id', canActivate: [AuthGuard], component: PostFormComponent },
+  { path: 'modify-profil/:id', canActivate: [AuthGuard], component: ProfilFormComponent },
   { path: 'profil', canActivate: [AuthGuard], component: ProfilComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'login', component: LoginComponent },
@@ -51,7 +53,8 @@ const appRoutes: Routes = [
     PostFormComponent,
     LoginComponent,
     HeaderComponent,
-    ProfilComponent
+    ProfilComponent,
+    ProfilFormComponent
   ],
   imports: [
     BrowserModule,
