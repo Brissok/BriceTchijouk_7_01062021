@@ -5,4 +5,6 @@ content: string;
 likes: number;
 imageUrl: string;
 UserId: number;
+createdAt: Date;
+updatedAt: Date;
 }

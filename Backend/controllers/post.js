@@ -17,6 +17,9 @@ exports.createPost = (req, res, next) => {
 
 exports.getAllPosts = (req, res, next) => {
     Post.findAll()
-        .then(posts => res.status(200).json(posts))
+        .then(posts => {
+          let reversed = posts.reverse();
+          res.status(200).json(reversed);
+        })
         .catch(error => res.status(400).json({ error }));
 };
