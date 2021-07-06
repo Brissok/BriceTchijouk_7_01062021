@@ -16,6 +16,7 @@ export class PostFormComponent implements OnInit {
   mode: string;
   post: Post;
   errorMsg: string;
+  imagePreview: string;
 
   constructor(private formBuilder: FormBuilder,
               private postService: PostService,
@@ -50,14 +51,17 @@ export class PostFormComponent implements OnInit {
     this.postForm = this.formBuilder.group({
       title: ["", Validators.required],
       content: ["", Validators.required],
+      image: ["", Validators.required]
     });
   }
 
   initModifyForm(post: Post) {
     this.postForm = this.formBuilder.group({
       title: [this.post.title, Validators.required],
-      content: [this.post.content, Validators.required]
+      content: [this.post.content, Validators.required],
+      image: [this.post.imageUrl, Validators.required]
     });
+    this.imagePreview = this.post.imageUrl;
   }
 
   onSubmit() {
@@ -65,8 +69,10 @@ export class PostFormComponent implements OnInit {
     newPost.title = this.postForm.get('title').value;
     newPost.content = this.postForm.get('content').value;
     newPost.UserId = this.auth.getUserId();
+    console.log(newPost);
+    console.log(this.postForm.get('image').value);
     if(this.mode === 'new') {
-      this.postService.createPost(newPost)
+      this.postService.createPost(newPost, this.postForm.get('image').value)
       .then((response: { message: string }) => {
         console.log(response.message);
         this.router.navigate(['/posts']);
@@ -76,7 +82,7 @@ export class PostFormComponent implements OnInit {
         this.errorMsg = error.message;
       });
     } else if(this.mode === 'edit') {
-      this.postService.modifyPost(this.post.id, newPost)
+      this.postService.modifyPost(this.post.id, newPost, this.postForm.get('image').value)
       .then((response: { message: string }) => {
         console.log(response.message);
         this.router.navigate(['posts']);
@@ -86,6 +92,17 @@ export class PostFormComponent implements OnInit {
         this.errorMsg = error.message;
       });
     }
+  }
+
+  onFileAdded(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
+    this.postForm.get('image').setValue(file);
+    this.postForm.updateValueAndValidity();
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   }
 
 }

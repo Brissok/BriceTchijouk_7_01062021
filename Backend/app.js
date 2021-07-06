@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { Sequelize } = require('sequelize');
 const { sequelize, User } = require('./models');
-//const path = require('path');
+const path = require('path');
 
 const userRoutes = require('./routes/user');
 const postRoutes = require('./routes/post');
@@ -19,10 +19,9 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
-//app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/posts', postRoutes);
 app.use('/auth', userRoutes);
-//app.use('/api/auth', userRoutes);
 
 module.exports = app;

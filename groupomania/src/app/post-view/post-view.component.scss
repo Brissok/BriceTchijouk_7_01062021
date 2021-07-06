@@ -1,3 +1,18 @@
 .btn {
     border: 1px solid black;
 }
+
+.post-date{
+    font-size: 0.85rem;
+}
+
+.list-group-item {
+    margin-bottom: 1rem;
+    border-top-width: 1px;
+    img {
+        display: block;
+        max-width: 500px;
+        max-height: 500px;
+        border: 1px solid rgba(0, 0, 0, 0.125);
+      }
+}

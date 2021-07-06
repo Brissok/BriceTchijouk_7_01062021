@@ -3,12 +3,11 @@ const { sequelize, Post } = require('../models');
 
 exports.createPost = (req, res, next) => {
     var regex = /^[^<>@&"()_$*€£`+=\/;?#]+$/;
+    const postObject = JSON.parse(req.body.post);
         const post = new Post({
-          title: req.body.title,
-          content: req.body.content,
-          UserId: req.body.UserId
+          ...postObject,
+          imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
         });
-        post.likes = 0;
         post.save()
           .then(() => res.status(201).json({ message: 'Message enregistré !'}))
           .catch(error => res.status(400).json({ error }));

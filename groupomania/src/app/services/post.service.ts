@@ -2,6 +2,7 @@ import { Subject } from "rxjs/Subject";
 import { Post } from "../models/Post.model";
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from "@angular/core";
+import { formatDate } from "@angular/common";
 
 @Injectable()
 export class PostService {
@@ -37,9 +38,13 @@ export class PostService {
     });
   }
 
-  createPost(post: Post) {
+  createPost(post: Post, image: File) {
     return new Promise<any>((resolve, reject) => {
-      this.http.post<any>('http://localhost:3000/posts', post).subscribe(
+      const formData = new FormData();
+      formData.append('post', JSON.stringify(post));
+      formData.append('image', image);
+      console.log(formData);
+      this.http.post<any>('http://localhost:3000/posts', formData).subscribe(
         (response: { message: string }) => {
           resolve(response);
         },
@@ -50,18 +55,31 @@ export class PostService {
     });
   }
 
-  modifyPost(id: string, post: Post) {
+  modifyPost(id: string, post: Post, image:string | File) {
     return new Promise<any>((resolve, reject) => {
-      const formData = new FormData();
-      formData.append('sauce', JSON.stringify(post));
-      this.http.put<any>('http://localhost:3000/api/posts/' + id, formData).subscribe(
-        (response: { message: string }) => {
-          resolve(response);
-        },
-        (error) => {
-          reject(error);
-        }
-      );
+      if(typeof image === 'string') {
+        this.http.put<any>('http://localhost:3000/api/posts/' + id, post).subscribe(
+          (response: { message: string }) => {
+            resolve(response);
+          },
+          (error) => {
+            reject(error);
+          }
+        );
+      } else {
+        const formData = new FormData();
+        formData.append('sauce', JSON.stringify(post));
+        formData.append('image', image);
+        this.http.put<any>('http://localhost:3000/api/posts/' + id, formData).subscribe(
+          (response: { message: string }) => {
+            resolve(response);
+          },
+          (error) => {
+            reject(error);
+          }
+        );
+      }
+      
     });
   }
 
