@@ -85,7 +85,7 @@ export class PostFormComponent implements OnInit {
       this.postService.modifyPost(this.post.id, newPost, this.postForm.get('image').value)
       .then((response: { message: string }) => {
         console.log(response.message);
-        this.router.navigate(['posts']);
+        this.router.navigate(['/posts']);
       })
       .catch((error) => {
         console.error(error);

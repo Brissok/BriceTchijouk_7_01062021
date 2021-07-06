@@ -26,10 +26,8 @@ export class ProfilComponent implements OnInit {
 
   ngOnInit() {
     this.userId = this.auth.getUserId();
-    console.log(this.auth.getUserId());
     this.userService.getUserById(this.userId).then(
       (user: User) => {
-        console.log(user);
         this.user = user;
       }
     );

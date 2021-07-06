@@ -55,10 +55,10 @@ export class PostService {
     });
   }
 
-  modifyPost(id: string, post: Post, image:string | File) {
+  modifyPost(id: number, post: Post, image:string | File) {
     return new Promise<any>((resolve, reject) => {
       if(typeof image === 'string') {
-        this.http.put<any>('http://localhost:3000/api/posts/' + id, post).subscribe(
+        this.http.put<any>('http://localhost:3000/posts/' + id, post).subscribe(
           (response: { message: string }) => {
             resolve(response);
           },
@@ -68,9 +68,9 @@ export class PostService {
         );
       } else {
         const formData = new FormData();
-        formData.append('sauce', JSON.stringify(post));
+        formData.append('post', JSON.stringify(post));
         formData.append('image', image);
-        this.http.put<any>('http://localhost:3000/api/posts/' + id, formData).subscribe(
+        this.http.put<any>('http://localhost:3000/posts/' + id, formData).subscribe(
           (response: { message: string }) => {
             resolve(response);
           },
@@ -83,7 +83,7 @@ export class PostService {
     });
   }
 
-  deletePost(id: string) {
+  deletePost(id: number) {
     return new Promise((resolve, reject) => {
       this.http.delete<any>('http://localhost:3000/posts/' + id).subscribe(
         (response: { message: string }) => {

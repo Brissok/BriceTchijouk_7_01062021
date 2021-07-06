@@ -31,6 +31,7 @@ const appRoutes: Routes = [
   { path: 'posts', canActivate: [AuthGuard], component: PostViewComponent },
   { path: 'posts/:id', canActivate: [AuthGuard], component: SinglePostComponent },
   { path: 'new-post', canActivate: [AuthGuard], component: PostFormComponent },
+  { path: 'modify-post/:id', canActivate: [AuthGuard], component: PostFormComponent },
   { path: 'modify-profil/:id', canActivate: [AuthGuard], component: ProfilFormComponent },
   { path: 'profil', canActivate: [AuthGuard], component: ProfilComponent },
   { path: 'signup', component: SignupComponent },

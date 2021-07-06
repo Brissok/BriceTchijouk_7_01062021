@@ -31,7 +31,6 @@ export class PostViewComponent implements OnInit, OnDestroy {
       (posts) => {
         this.posts = posts;
         this.errorMsg = null;
-      
         let users = [];
         this.posts.forEach(post => {
           this.userService.getUserById(post.UserId)
@@ -46,8 +45,6 @@ export class PostViewComponent implements OnInit, OnDestroy {
             }
           );
         });
-        
-
       },
       (error) => {
         this.errorMsg = JSON.stringify(error);
@@ -59,6 +56,10 @@ export class PostViewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.postSub.unsubscribe();
+  }
+
+  onClickPost(id: number) {
+    this.router.navigate(['posts', id]);
   }
 
   
