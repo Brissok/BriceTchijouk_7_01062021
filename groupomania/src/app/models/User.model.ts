@@ -6,7 +6,6 @@ export class User {
     email: string;
     password: string;
     posts: string[];
-    likes: string[];
     comments: string[];
     }
 

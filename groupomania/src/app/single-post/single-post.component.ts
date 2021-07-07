@@ -14,9 +14,9 @@ import { AuthService } from '../services/auth.service';
 export class SinglePostComponent implements OnInit {
 
   post: Post;
-  user: User;
   userId: number;
   errorMsg: string;
+  isAdmin: boolean = false;
 
   constructor(private postService: PostService,
               private userService: UserService,
@@ -28,24 +28,26 @@ export class SinglePostComponent implements OnInit {
     this.userId = this.auth.getUserId();
     this.route.params.subscribe(
       (params) => {
+        console.log(params.id);
         this.postService.getPostById(params.id)
           .then((post: Post) => {
             this.post = post;
-            this.userService.getUserById(post.UserId)
-            .then(
-              (user: User) => {
-                this.user = user;
-              }
-            ).catch(
-              (error) => {
-                this.errorMsg = JSON.stringify(error);
-              }
-            );
-          }
-        );
+            console.log(post);
+          });
       }
     );
-    this.userId = this.auth.getUserId();     
+    this.userId = this.auth.getUserId();
+    console.log(this.userId);
+    this.userService.getUserById(this.userId)
+      .then((user) => {
+        console.log(user);
+        if(user.isAdmin === true) {
+          this.isAdmin = true;
+        } else {
+          this.isAdmin = false;
+        }
+      });
+      console.log(this.isAdmin);
   }
 
   onBack() {

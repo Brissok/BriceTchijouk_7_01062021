@@ -1,5 +1,6 @@
 const fs = require('fs');
-const { sequelize, Post } = require('../models');
+const { sequelize, Post, User, Comment } = require('../models');
+
 
 exports.createPost = (req, res, next) => {
     var regex = /^[^<>@&"()_$*€£`+=\/;?#]+$/;
@@ -15,7 +16,15 @@ exports.createPost = (req, res, next) => {
   };
 
 exports.getAllPosts = (req, res, next) => {
-    Post.findAll()
+    Post.findAll({ 
+      include: [{ 
+        model: User, attributes: ['firstName', 'lastName'] 
+        },
+        { 
+        model: Comment, include: { model: User, attributes: ['firstName', 'lastName'] 
+        } 
+      }]
+    })
         .then(posts => {
           let reversed = posts.reverse();
           res.status(200).json(reversed);
@@ -24,13 +33,13 @@ exports.getAllPosts = (req, res, next) => {
 };
 
 exports.getOnePost = (req, res, next) => {
-  Post.findOne({ where: { id: req.params.id } })
+  Post.findOne({ include: User, where: { id: req.params.id } })
   .then(post => res.status(200).json(post))
   .catch(error => res.status(404).json({ error }));
 };
 
 exports.modifyPost = (req, res, next) => {
-  var regex = /^[^<>@&"()!_$*€£`+=\/;?#]+$/;
+  var regex = /^[^<>@&"()_$*€£`+=\/;?#]+$/;
   const postObject = req.file ?
   {
     ...JSON.parse(req.body.post),

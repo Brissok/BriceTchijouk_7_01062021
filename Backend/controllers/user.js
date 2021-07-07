@@ -49,10 +49,16 @@ exports.login = async (req, res, next) => {
                     { expiresIn: '24h' }
                 )
             });
+            res.cookie('jwt', token, { httpOnly: true, maxAge });
         })
         .catch(error => res.status(500).json({ error }));
     }
 };
+
+exports.logout = (req, res, next) => {
+    res.cookie('jwt', '', { maxAge: 1 });
+    res.redirect('/');
+}
 
 exports.getOneUser = (req, res, next) => {
     User.findOne({ where: { id: req.params.id } })

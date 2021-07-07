@@ -1,5 +1,6 @@
 import { Subject } from "rxjs/Subject";
 import { Post } from "../models/Post.model";
+import { Comment } from "../models/Comment.model";
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from "@angular/core";
 import { formatDate } from "@angular/common";
@@ -25,7 +26,7 @@ export class PostService {
     );
   }
 
-  getPostById(id: string) {
+  getPostById(id: number) {
     return new Promise<Post>((resolve, reject) => {
       this.http.get<Post>('http://localhost:3000/posts/' + id).subscribe(
         (post: Post) => {
@@ -86,6 +87,19 @@ export class PostService {
   deletePost(id: number) {
     return new Promise((resolve, reject) => {
       this.http.delete<any>('http://localhost:3000/posts/' + id).subscribe(
+        (response: { message: string }) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+  createComment(comment: Comment) {
+    return new Promise<any>((resolve, reject) => {
+      this.http.post<any>('http://localhost:3000/comments', comment).subscribe(
         (response: { message: string }) => {
           resolve(response);
         },
