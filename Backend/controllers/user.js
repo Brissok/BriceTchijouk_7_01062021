@@ -1,6 +1,10 @@
+require('dotenv').config({ path: '../config/.env' });
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const { generateToken } = require('../middleware/auth');
 const { sequelize, User } = require('../models');
+
+// const
+const maxAge = 3 * 24 * 60 * 60 * 1000;
 
 exports.signup = async (req, res, next) => {
     var emailRegex = /[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([_\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})/;
@@ -41,15 +45,13 @@ exports.login = async (req, res, next) => {
             if (!valid) {
                 return res.status(401).json({ message: 'Mot de passe incorrect !' });
             }
-            res.status(200).json({
-                userId: user.id,
-                token: jwt.sign(
-                    { userId: user.id },
-                    process.env.TOKEN_KEY,
-                    { expiresIn: '24h' }
-                )
-            });
-            res.cookie('jwt', token, { httpOnly: true, maxAge });
+			// on crée un token est on le passe dans le cookie
+			const token = generateToken(user.id);
+			res.cookie('jwt', token, { httpOnly: true, maxAge });
+			res.status(200).send({
+				userId: user.id,
+                token: token
+			});
         })
         .catch(error => res.status(500).json({ error }));
     }

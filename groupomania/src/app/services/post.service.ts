@@ -110,4 +110,17 @@ export class PostService {
     });
   }
 
+  deleteComment(id: number) {
+    return new Promise((resolve, reject) => {
+      this.http.delete<any>('http://localhost:3000/comments/' + id).subscribe(
+        (response: { message: string }) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
 }

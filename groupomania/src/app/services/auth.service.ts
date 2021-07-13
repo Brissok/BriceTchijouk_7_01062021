@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
-  isAuth$ = new BehaviorSubject<boolean>(false);
+  isAuth$ = new BehaviorSubject<boolean>(JSON.parse(localStorage.getItem('isAuth')));
   private authToken: string;
   private userId: number;
 
@@ -45,6 +45,7 @@ export class AuthService {
         (response: {userId: number, token: string}) => {
           this.userId = response.userId;
           this.authToken = response.token;
+          localStorage.setItem('isAuth', "true");
           this.isAuth$.next(true);
           resolve();
         },
@@ -56,6 +57,7 @@ export class AuthService {
   }
 
   logout() {
+    localStorage.removeItem('isAuth');
     this.authToken = null;
     this.userId = null;
     this.isAuth$.next(false);

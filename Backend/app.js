@@ -3,9 +3,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { Sequelize } = require('sequelize');
 const { sequelize, User } = require('./models');
+const { checkUser, requireAuth } = require('./middleware/auth');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const session = require('cookie-session');
+const session = require('express-session');
 
 const userRoutes = require('./routes/user');
 const postRoutes = require('./routes/post');
@@ -21,20 +22,30 @@ app.use((req, res, next) => {
 }); 
 
 // Options pour sécuriser les cookies
-var expiryDate = new Date( Date.now() + 60 * 60 * 1000 ); // 1 hour
-app.set('trust proxy', 1) // trust first proxy
-app.use(session({
-  secret: 'groupomania',
-  name: 'session',
-  keys: ['key1', 'key2'],
-  cookie: { 
-            httpOnly: true,
-            expires: expiryDate
-          }
-  })
+const hour = 3 * 24 * 60 * 60 * 1000;
+const expiryDate = new Date(Date.now() + hour);
+app.set('trust proxy', 1); // trust first proxy
+app.use(
+	session({
+		secret: process.env.SEC_SES,
+		name: 'sessionId',
+		resave: false,
+		saveUninitialized: true,
+		cookie: {
+			secure: false,
+			expires: expiryDate,
+		},
+	}),
 );
 
 app.use(bodyParser.json());
+app.use(cookieParser());
+
+// jwt
+app.get('*', checkUser);
+app.get('/jwtid', requireAuth, (req, res) => {
+	res.status(200).json(res.locals.user.id);
+});
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

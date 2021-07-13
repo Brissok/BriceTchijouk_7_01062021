@@ -20,12 +20,14 @@ export class PostViewComponent implements OnInit, OnDestroy {
   postSub: Subscription;
   users: User[];
   user: User;
+  userId: number;
   lastUpdate = new Date();
   commentForm: FormGroup;
   comment: Comment;
   errorMsg: string;
   isComment: boolean = false;
   commentsView: boolean = false;
+  isAdmin: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
               private postService: PostService,
@@ -36,6 +38,7 @@ export class PostViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.userId = this.auth.getUserId();
     this.postSub = this.postService.postSubject.subscribe(
       (posts) => {
         this.posts = posts;
@@ -45,7 +48,16 @@ export class PostViewComponent implements OnInit, OnDestroy {
         this.errorMsg = JSON.stringify(error);
       }
     );
-    this.postService.getPosts()
+    this.postService.getPosts();
+    this.userId = this.auth.getUserId();
+    this.userService.getUserById(this.userId)
+      .then((user) => {
+        if(user.isAdmin === true) {
+          this.isAdmin = true;
+        } else {
+          this.isAdmin = false;
+        }
+      });
     
   }
 
@@ -104,6 +116,19 @@ export class PostViewComponent implements OnInit, OnDestroy {
     } else {
       this.commentsView = true;
     }
+  }
+
+  onDelete() {
+    this.postService.deleteComment(this.comment.id)
+      .then((response) => {
+        console.log(response);
+        this.router.navigate(['/posts']);
+      }
+    ).catch((error) => {
+        this.errorMsg = error.message;
+        console.error(error);
+      }
+    );
   }
 
 }

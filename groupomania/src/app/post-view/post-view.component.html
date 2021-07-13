@@ -32,6 +32,7 @@
             </span>
             <p class="post-date">{{ comment.createdAt | date: 'medium' }}</p>
             <p>{{ comment.text }}</p>
+            <button class="btn btn-warning" (click)="onDelete()" *ngIf="(userId === comment?.UserId) || isAdmin">Supprimer</button>
           </li>
         </ng-container>
       </ul>
