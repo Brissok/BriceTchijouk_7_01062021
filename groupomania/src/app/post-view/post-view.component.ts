@@ -25,8 +25,8 @@ export class PostViewComponent implements OnInit, OnDestroy {
   commentForm: FormGroup;
   comment: Comment;
   errorMsg: string;
-  isComment: boolean = false;
-  commentsView: boolean = false;
+  isComment: number = 0;
+  commentsView: number = 0;
   isAdmin: boolean = false;
   loading: boolean;
 
@@ -79,11 +79,11 @@ export class PostViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  onClickComment() {
-    if(this.isComment) {
-      this.isComment = false;
+  onClickComment(id: number) {
+    if(this.isComment === id) {
+      this.isComment = 0;
     } else {
-      this.isComment = true;
+      this.isComment = id;
       this.initCommentForm();
     }
     
@@ -100,12 +100,11 @@ export class PostViewComponent implements OnInit, OnDestroy {
     newComment.text = this.commentForm.get('text').value;
     newComment.UserId = this.auth.getUserId();
     newComment.PostId = id;
-    console.log(newComment);
     this.postService.createComment(newComment)
       .then((response: { message: string }) => {
         console.log(response.message);
         this.router.navigate(['/posts']);
-        this.isComment = false;
+        this.isComment = 0;
         this.postService.getPosts();
       })
       .catch((error) => {
@@ -114,19 +113,19 @@ export class PostViewComponent implements OnInit, OnDestroy {
       });
   }
 
-  onCommentsView() {
-    if(this.commentsView) {
-      this.commentsView = false;
+  onCommentsView(id: number) {
+    if(this.commentsView === id) {
+      this.commentsView = 0;
     } else {
-      this.commentsView = true;
+      this.commentsView = id;
     }
   }
 
-  onDelete() {
-    this.postService.deleteComment(this.comment.id)
-      .then((response) => {
-        console.log(response);
-        this.router.navigate(['/posts']);
+  onDelete(id: number) {
+    this.postService.deleteComment(id)
+      .then((response: { message: string }) => {
+        console.log(response.message);
+        this.postService.getPosts();
       }
     ).catch((error) => {
         this.errorMsg = error.message;

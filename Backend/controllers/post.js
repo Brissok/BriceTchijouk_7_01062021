@@ -17,23 +17,30 @@ exports.createPost = (req, res, next) => {
 
 exports.getAllPosts = (req, res, next) => {
     Post.findAll({ 
-      include: [{ 
-        model: User, attributes: ['firstName', 'lastName'] 
-        },
-        { 
-        model: Comment, include: { model: User, attributes: ['firstName', 'lastName'] 
-        } 
-      }]
+      order: [['createdAt', 'DESC']],
+      include: [
+        { model: User, attributes: ['firstName', 'lastName'] },
+        { model: Comment, 
+          include: [ { model: User, attributes: ['firstName', 'lastName'] } ]
+        }
+      ],
+      order: [ [ Comment, 'createdAt', 'DESC' ] ]
     })
-        .then(posts => {
-          let reversed = posts.reverse();
-          res.status(200).json(reversed);
-        })
-        .catch(error => res.status(400).json({ error }));
+    .then(posts => res.status(200).json(posts))
+    .catch(error => res.status(400).json({ error }));
 };
 
 exports.getOnePost = (req, res, next) => {
-  Post.findOne({ include: User, where: { id: req.params.id } })
+  Post.findOne({ where: { id: req.params.id },
+    include: [
+      { model: User, attributes: ['firstName', 'lastName'] },
+      { model: Comment, 
+          include: 
+        { model: User, attributes: ['firstName', 'lastName'] } 
+      }
+    ],
+    order : [[ Comment, 'createdAt', 'DESC']],
+  })
   .then(post => res.status(200).json(post))
   .catch(error => res.status(404).json({ error }));
 };

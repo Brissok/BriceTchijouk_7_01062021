@@ -12,3 +12,12 @@ exports.createComment = (req, res, next) => {
           .catch(error => res.status(400).json({ error }));
   
 };
+
+exports.deleteComment = (req, res, next) => {
+  Comment.findOne({ where: { id: req.params.id } })
+    .then(comment => {
+          Comment.destroy({ where: { id: req.params.id } })
+              .then(() => res.status(200).json({ message: 'Commentaire supprimé !'}))
+              .catch(error => res.status(400).json({ error }));
+      });
+};
