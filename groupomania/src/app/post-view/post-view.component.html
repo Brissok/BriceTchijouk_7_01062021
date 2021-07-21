@@ -14,15 +14,15 @@
       <h3>{{ post.title }}</h3>
       <p>{{ post.content }}</p>
       <img [src]="post.imageUrl" (click)="onClickPost(post?.id)">
-      <button class="btn" (click)="onClickComment(post?.id)">
+      <button class="btn btn-sm btn-outline-primary" (click)="onClickComment(post?.id)">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left" viewBox="0 0 16 16">
         <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
         </svg>  commenter
       </button>
-      <button class="btn" (click)="onCommentsView(post?.id)" *ngIf="post.Comments.length !== 0">
+      <button class="btn btn-sm btn-outline-secondary" (click)="onCommentsView(post?.id)" *ngIf="post.Comments.length !== 0">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left" viewBox="0 0 16 16">
         <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-        </svg>  Voir les {{ post.Comments.length }} commentaires
+        </svg>  Voir les commentaires
       </button>
       <ul class="list-group" *ngIf="commentsView === post?.id">
         <ng-container *ngFor="let comment of post.Comments">
@@ -35,7 +35,7 @@
             </span>
             <p class="post-date">{{ comment.createdAt | date: 'medium' }}</p>
             <p>{{ comment.text }}</p>
-            <button class="btn btn-warning" (click)="onDelete(comment?.id)" *ngIf="userId === comment?.UserId || userId === post?.UserId || isAdmin">Supprimer</button>
+            <button class="btn btn-sm btn-danger" (click)="onDelete(comment?.id)" *ngIf="userId === comment?.UserId || userId === post?.UserId || isAdmin">Supprimer</button>
           </li>
         </ng-container>
       </ul>
