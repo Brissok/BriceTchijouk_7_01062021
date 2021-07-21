@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { CurrentUser } from '../models/CurrentUser.model';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -8,13 +9,20 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
-  isAuth$ = new BehaviorSubject<boolean>(JSON.parse(localStorage.getItem('isAuth')));
+  private currentUserSubject: BehaviorSubject<CurrentUser>;
+  public currentUser: Observable<CurrentUser>;
   private authToken: string;
   private userId: number;
 
   constructor(private http: HttpClient,
-              private router: Router) {}
+              private router: Router) {
+                this.currentUserSubject = new BehaviorSubject<CurrentUser>(JSON.parse(localStorage.getItem('currentUser')));
+                this.currentUser = this.currentUserSubject.asObservable();
+              }
 
+  public get currentUserValue(): CurrentUser {
+      return this.currentUserSubject.value;
+  }
   
   createUser(firstName: string, lastName: string, fonction: string, email: string, password: string) {
     return new Promise((resolve, reject) => {
@@ -36,17 +44,17 @@ export class AuthService {
   }
 
   getUserId() {
-    return this.userId;
+    return JSON.parse(localStorage.getItem('currentUser')).userId;
   }
 
   loginUser(email: string, password: string) {
     return new Promise<void>((resolve, reject) => {
       this.http.post<any>('http://localhost:3000/auth/login', {email: email, password: password}).subscribe(
-        (response: {userId: number, token: string}) => {
-          this.userId = response.userId;
-          this.authToken = response.token;
-          localStorage.setItem('isAuth', "true");
-          this.isAuth$.next(true);
+        (user: {userId: number, token: string}) => {
+          this.userId = user.userId;
+          this.authToken = user.token;
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          this.currentUserSubject.next(user);
           resolve();
         },
         (error) => {
@@ -57,10 +65,10 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('isAuth');
+    localStorage.removeItem('currentUser');
     this.authToken = null;
     this.userId = null;
-    this.isAuth$.next(false);
+    this.currentUserSubject.next(null);
     this.router.navigate(['login']);
   }
 

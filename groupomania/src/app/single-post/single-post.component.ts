@@ -37,17 +37,14 @@ export class SinglePostComponent implements OnInit {
       }
     );
     this.userId = this.auth.getUserId();
-    console.log(this.userId);
     this.userService.getUserById(this.userId)
       .then((user) => {
-        console.log(user);
         if(user.isAdmin === true) {
           this.isAdmin = true;
         } else {
           this.isAdmin = false;
         }
       });
-      console.log(this.isAdmin);
   }
 
   onBack() {

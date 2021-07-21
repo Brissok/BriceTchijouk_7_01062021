@@ -28,6 +28,7 @@ export class PostViewComponent implements OnInit, OnDestroy {
   isComment: boolean = false;
   commentsView: boolean = false;
   isAdmin: boolean = false;
+  loading: boolean;
 
   constructor(private formBuilder: FormBuilder,
               private postService: PostService,
@@ -38,14 +39,17 @@ export class PostViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.loading = true;
     this.userId = this.auth.getUserId();
     this.postSub = this.postService.postSubject.subscribe(
       (posts) => {
         this.posts = posts;
+        this.loading = false;
         this.errorMsg = null;
       },
       (error) => {
         this.errorMsg = JSON.stringify(error);
+        this.loading = false;
       }
     );
     this.postService.getPosts();

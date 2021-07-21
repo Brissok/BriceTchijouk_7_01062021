@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from './services/auth.service';
+import { Router } from '@angular/router';
+import { CurrentUser } from './models/CurrentUser.model';
 import { LinkService } from './services/link';
 
 @Component({
@@ -9,7 +12,19 @@ import { LinkService } from './services/link';
 
 export class AppComponent {
 
-  constructor(private link: LinkService) {}
+  currentUser: CurrentUser;
+
+  constructor(private link: LinkService,
+              private router: Router,
+              private authService: AuthService
+  ) {
+    this.authService.currentUser.subscribe(x => this.currentUser = x);
+  }
+
+  logout() {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+  }
 
   ngOnInit() {
 
