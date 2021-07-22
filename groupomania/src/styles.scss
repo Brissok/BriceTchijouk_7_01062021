@@ -1,5 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
+$gm-blue: #091F43;
 
 .btn {
     margin: 0.5rem 0.2rem;
+}
+
+.btn-danger {
+    background-color: #D1515A;
+    border-color: #D1515A;
+}
+
+.btn-outline-primary {
+    color: $gm-blue;
+    border-color: $gm-blue;
+    &:hover {
+        background-color: $gm-blue;
+        border-color: $gm-blue;
+    }
+    &:focus {
+        box-shadow: 0 0 0 0.25rem rgb(9 31 67 / 60%);
+    }
+}
+
+.bi-person-circle {
+    color: $gm-blue;
+}
+
+.user-info {
+    display: inline;
+    color: $gm-blue;
+}
+
+.post-date{
+    font-size: 0.75rem;
+    color: $gm-blue;
 }

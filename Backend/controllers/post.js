@@ -17,14 +17,16 @@ exports.createPost = (req, res, next) => {
 
 exports.getAllPosts = (req, res, next) => {
     Post.findAll({ 
-      order: [['createdAt', 'DESC']],
+      
       include: [
         { model: User, attributes: ['firstName', 'lastName'] },
-        { model: Comment, 
-          include: [ { model: User, attributes: ['firstName', 'lastName'] } ]
+        { model: Comment,
+          separate: true,
+          include: [ { model: User, attributes: ['firstName', 'lastName'] } ],
+          order: [ [ 'createdAt', 'DESC' ] ]
         }
       ],
-      order: [ [ Comment, 'createdAt', 'DESC' ] ]
+      order: [[ 'createdAt', 'DESC']]
     })
     .then(posts => res.status(200).json(posts))
     .catch(error => res.status(400).json({ error }));
@@ -52,10 +54,12 @@ exports.modifyPost = (req, res, next) => {
     ...JSON.parse(req.body.post),
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   } : { ...req.body };
-  if(postObject.title.match(regex) && 
+  if (postObject.title.match(regex) && 
     postObject.content.match(regex)) {
       Post.findOne({ where: { id: req.params.id } })
       .then(post => {
+        const filename = post.imageUrl.split('/images/')[1];
+        fs.unlink(`images/${filename}`, () => {
         post.update({
           title: postObject.title,
           content: postObject.content,
@@ -63,8 +67,8 @@ exports.modifyPost = (req, res, next) => {
         })
         .then(() => res.status(200).json({ message: 'Message modifié !'}))
         .catch(error => res.status(400).json({ error }));
+        });
       })
-
     } else {
       console.log('Wrong...!');
       res.status(400).json({ error: 'Incorrect !' });

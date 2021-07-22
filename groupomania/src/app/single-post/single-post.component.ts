@@ -37,7 +37,6 @@ export class SinglePostComponent implements OnInit {
         this.postService.getPostById(params.id)
           .then((post: Post) => {
             this.post = post;
-            console.log(post);
           });
       }
     );

@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { Sequelize } = require('sequelize');
 const { sequelize, User } = require('./models');
@@ -8,11 +9,14 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
+
 const userRoutes = require('./routes/user');
 const postRoutes = require('./routes/post');
 const commentRoutes = require('./routes/comment');
 
 const app = express();
+
+app.use(helmet());
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -40,12 +44,6 @@ app.use(
 
 app.use(bodyParser.json());
 app.use(cookieParser());
-
-// jwt
-app.get('*', checkUser);
-app.get('/jwtid', requireAuth, (req, res) => {
-	res.status(200).json(res.locals.user.id);
-});
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

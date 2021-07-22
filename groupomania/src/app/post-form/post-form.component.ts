@@ -69,8 +69,6 @@ export class PostFormComponent implements OnInit {
     newPost.title = this.postForm.get('title').value;
     newPost.content = this.postForm.get('content').value;
     newPost.UserId = this.auth.getUserId();
-    console.log(newPost);
-    console.log(this.postForm.get('image').value);
     if(this.mode === 'new') {
       this.postService.createPost(newPost, this.postForm.get('image').value)
       .then((response: { message: string }) => {
