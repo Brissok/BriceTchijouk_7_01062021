@@ -8,7 +8,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { PostListComponent } from './post-list/post-list.component';
 import { PostComponent } from './post/post.component';
-import { AuthComponent } from './auth/auth.component';
 import { PostViewComponent } from './post-view/post-view.component';
 import { SinglePostComponent } from './single-post/single-post.component';
 import { FourOhFourComponent } from './four-oh-four/four-oh-four.component';
@@ -47,7 +46,6 @@ const appRoutes: Routes = [
     SignupComponent,
     PostListComponent,
     PostComponent,
-    AuthComponent,
     PostViewComponent,
     SinglePostComponent,
     FourOhFourComponent,

@@ -2,15 +2,15 @@ require('dotenv').config({ path: '../config/.env' });
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { sequelize, User } = require('../models');
-
-// const
-const maxAge = 3 * 24 * 60 * 60 * 1000;
+var LocalStorage = require('node-localstorage').LocalStorage,
+localStorage = new LocalStorage('./scratch');
 
 exports.signup = async (req, res, next) => {
     var emailRegex = /[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([_\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})/;
     var pwdRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
     if(req.body.email.match(emailRegex)) {
         if(req.body.password.match(pwdRegex)) {
+            // si les inputs correspondent aux regex, on hash le mot de passe et on crée le user
             bcrypt.hash(req.body.password, 10)
             .then(hash => {
                 const user = new User({
@@ -45,12 +45,14 @@ exports.login = async (req, res, next) => {
             if (!valid) {
                 return res.status(401).json({ message: 'Mot de passe incorrect !' });
             }
-			// on crée un token
+			// on crée un token et on l'enregistre dans le localstorage
 			const token = jwt.sign(
                 { userId: user.id },
                 process.env.TOKEN_KEY,
                 { expiresIn: '24h' }
             );
+            localStorage.setItem("token", token);
+            // on renvoi l'id user et le token
 			res.status(200).send({
 				userId: user.id,
                 token: token
@@ -61,7 +63,7 @@ exports.login = async (req, res, next) => {
 };
 
 exports.logout = (req, res, next) => {
-    res.cookie('jwt', '', { maxAge: 1 });
+    localStorage.removeItem("token");
     res.redirect('/');
 }
 

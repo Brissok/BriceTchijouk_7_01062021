@@ -29,7 +29,6 @@ export class LoginComponent implements OnInit {
     const password = this.loginForm.get('password').value;
     this.auth.loginUser(email, password).then(
       (res) => {
-        console.log(res.errorBrute);
         if (res.errorBrute) {
           this.errorMsg = res.errorBrute;
         } else if (!res.errorBrute) {
