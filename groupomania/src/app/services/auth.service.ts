@@ -48,14 +48,19 @@ export class AuthService {
   }
 
   loginUser(email: string, password: string) {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<any>((resolve, reject) => {
       this.http.post<any>('http://localhost:3000/auth/login', {email: email, password: password}).subscribe(
-        (user: {userId: number, token: string}) => {
-          this.userId = user.userId;
-          this.authToken = user.token;
-          localStorage.setItem('currentUser', JSON.stringify(user));
-          this.currentUserSubject.next(user);
-          resolve();
+        (res: {errorBrute: string, userId: number, token: string}) => {
+          if(!res.errorBrute) {
+            this.userId = res.userId;
+            this.authToken = res.token;
+            localStorage.setItem('currentUser', JSON.stringify(res));
+            this.currentUserSubject.next(res);
+            resolve(res);
+          } else {
+            this.currentUserSubject.next(null);
+            resolve(res);
+          }
         },
         (error) => {
           reject(error);

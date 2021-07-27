@@ -2,12 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
-const { Sequelize } = require('sequelize');
-const { sequelize, User } = require('./models');
-const { checkUser, requireAuth } = require('./middleware/auth');
 const path = require('path');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
 
 
 const userRoutes = require('./routes/user');
@@ -25,25 +20,7 @@ app.use((req, res, next) => {
   next();
 }); 
 
-// Options pour sécuriser les cookies
-const hour = 3 * 24 * 60 * 60 * 1000;
-const expiryDate = new Date(Date.now() + hour);
-app.set('trust proxy', 1); // trust first proxy
-app.use(
-	session({
-		secret: process.env.SEC_SES,
-		name: 'sessionId',
-		resave: false,
-		saveUninitialized: true,
-		cookie: {
-			secure: false,
-			expires: expiryDate,
-		},
-	}),
-);
-
 app.use(bodyParser.json());
-app.use(cookieParser());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

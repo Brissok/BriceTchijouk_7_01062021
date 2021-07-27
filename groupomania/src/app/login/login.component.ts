@@ -28,8 +28,14 @@ export class LoginComponent implements OnInit {
     const email = this.loginForm.get('email').value;
     const password = this.loginForm.get('password').value;
     this.auth.loginUser(email, password).then(
-      () => {
-        this.router.navigate(['/posts']);
+      (res) => {
+        console.log(res.errorBrute);
+        if (res.errorBrute) {
+          this.errorMsg = res.errorBrute;
+        } else if (!res.errorBrute) {
+          this.router.navigate(['/posts']);
+        }
+        
       }
     ).catch(
       (error) => {

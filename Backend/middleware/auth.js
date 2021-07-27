@@ -1,16 +1,16 @@
 const jwt = require('jsonwebtoken');
-const models = require('../models');
+//const models = require('../models');
 require('dotenv').config({ path: '../config/.env' });
 
 // constant
-const maxAge = 3 * 24 * 60 * 60 * 1000;
+//const maxAge = 3 * 24 * 60 * 60 * 1000;
 
-/* module.exports = (req, res, next) => {
+module.exports = (req, res, next) => {
     try {
-        const token = req.headers.authorization.split(' ')[1];
+        const token = JSON.parse(localStorage.getItem('currentUser')).token;
         const decodedToken = jwt.verify(token, process.env.TOKEN_KEY);
         const userId = decodedToken.idUSERS;
-        if (req.body.idUSERS && req.body.idUSERS !== userId) {
+        if (JSON.parse(localStorage.getItem('currentUser')).userId !== userId) {
             throw 'User ID non valable !';
         } else {
             next();
@@ -18,19 +18,12 @@ const maxAge = 3 * 24 * 60 * 60 * 1000;
     } catch (error) {
         res.status(401).json({ error: error | 'Requête non authentifiée !' });
     }
-}; */
+}; 
 
-//* ******************** generateToken ******************** *//
-exports.generateToken = id => {
-	return jwt.sign({ id }, process.env.TOKEN_KEY, {
-		expiresIn: maxAge,
-	});
-};
-//* ******************** generateToken end ******************** *//
 
 //* ******************** checkUser ******************** *//
-exports.checkUser = (req, res, next) => {
-	const token = req.cookies.jwt;
+/* exports.checkUser = (req, res, next) => {
+	const token = JSON.parse(localStorage.getItem('currentUser')).token;
 	console.log(token);
 	if (token) {
 		jwt.verify(token, process.env.TOKEN_KEY, async (err, decodedToken) => {
@@ -55,11 +48,11 @@ exports.checkUser = (req, res, next) => {
 		res.locals.user = null;
 		next();
 	}
-};
+}; */
 //* ******************** checkUser end ******************** *//
 
 //* ******************** requireAuth ******************** *//
-exports.requireAuth = (req, res, next) => {
+/* exports.requireAuth = (req, res, next) => {
 	const token = req.cookies.jwt;
 	console.log(token);
 	if (token) {
@@ -74,5 +67,5 @@ exports.requireAuth = (req, res, next) => {
 	} else {
 		console.log('no token !');
 	}
-};
+}; */
 //* ******************** requireAuth end ******************** *//
