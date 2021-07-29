@@ -1,20 +1,6 @@
 const fs = require('fs');
 const { sequelize, Post, User, Comment } = require('../models');
 
-//Permet de créer un post
-exports.createPost = (req, res, next) => {
-    var regex = /^[^<>@&"()_$*€£`+=\/;?#]+$/;
-    const postObject = JSON.parse(req.body.post);
-        const post = new Post({
-          ...postObject,
-          imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-        });
-        post.save()
-          .then(() => res.status(201).json({ message: 'Message enregistré !'}))
-          .catch(error => res.status(400).json({ error }));
-  
-  };
-
 //Permet de récupérer tous les posts
 exports.getAllPosts = (req, res, next) => {
     Post.findAll({ 
@@ -53,6 +39,25 @@ exports.getOnePost = (req, res, next) => {
   .catch(error => res.status(404).json({ error }));
 };
 
+//Permet de créer un post
+exports.createPost = (req, res, next) => {
+  var regex = /^[^<>@&"()_$*€£`+=\/;?#]+$/;
+  const postObject = JSON.parse(req.body.post);
+  //On vérifie les inputs avec le regex pour éviter les injections de code
+  if (postObject.title.match(regex) && postObject.content.match(regex)) {
+      //on crée un nouveau Post et on l'enregistre dans la base de donnée
+      const post = new Post({
+        ...postObject,
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      });
+      post.save()
+        .then(() => res.status(201).json({ message: 'Message enregistré !'}))
+        .catch(error => res.status(400).json({ error }));
+  } else {
+      res.status(400).json({ error: 'Incorrect !' });
+  }
+};
+
 //Permet de modifier un post
 exports.modifyPost = (req, res, next) => {
   var regex = /^[^<>@&"()_$*€£`+=\/;?#]+$/;
@@ -77,7 +82,6 @@ exports.modifyPost = (req, res, next) => {
         });
       })
     } else {
-      console.log('Wrong...!');
       res.status(400).json({ error: 'Incorrect !' });
     }
 };

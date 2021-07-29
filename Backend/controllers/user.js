@@ -5,27 +5,34 @@ const { sequelize, User } = require('../models');
 var LocalStorage = require('node-localstorage').LocalStorage,
 localStorage = new LocalStorage('./scratch');
 
+//Permet de créer un compte user
 exports.signup = async (req, res, next) => {
     var emailRegex = /[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([_\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})/;
     var pwdRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+    var firstNameReg = /[A-Za-zÀ-ÿ](([\-]?[a-zA-Z0-9]+)*)/;
+    var lastNameReg = /[A-Za-z0-9](([\-|\s|\\']?[a-zA-Z0-9]+)*)/;
     if(req.body.email.match(emailRegex)) {
         if(req.body.password.match(pwdRegex)) {
-            // si les inputs correspondent aux regex, on hash le mot de passe et on crée le user
-            bcrypt.hash(req.body.password, 10)
-            .then(hash => {
-                const user = new User({
-                    firstName: req.body.firstName,
-                    lastName: req.body.lastName,
-                    fonction: req.body.fonction,
-                    email: req.body.email,
-                    password: hash,
-                    isAdmin: false
-                });
-                user.save()
-                    .then(() => res.status(201).json({ message: 'Utilisateur créé !'}))
-                    .catch(error => res.status(400).json({ error }));
-            })
-            .catch(error => res.status(500).json({ error }));
+            if(req.body.firstName.match(firstNameReg) && req.body.lastName.match(lastNameReg) && req.body.fonction.match(lastNameReg)) {
+                // si les inputs correspondent aux regex, on hash le mot de passe et on crée le user
+                bcrypt.hash(req.body.password, 10)
+                .then(hash => {
+                    const user = new User({
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        fonction: req.body.fonction,
+                        email: req.body.email,
+                        password: hash,
+                        isAdmin: false
+                    });
+                    user.save()
+                        .then(() => res.status(201).json({ message: 'Utilisateur créé !'}))
+                        .catch(error => res.status(400).json({ error }));
+                })
+                .catch(error => res.status(500).json({ error }));
+            } else {
+                res.status(404).json({ message: "Informations de profil invalides !" });
+            }
         } else {
             res.status(404).json({ message: 'Le mot de passe doit contenir entre 8 et 15 caractères avec au moins un chiffre, une majuscule, une minuscule et un caractère spécial !' });
         }
@@ -35,6 +42,7 @@ exports.signup = async (req, res, next) => {
     }
 };
 
+//Permet de se connecter avec un compte existant
 exports.login = async (req, res, next) => {
     const user = await User.findOne({ where: { email: req.body.email } });
     if(user === null) {
@@ -63,20 +71,28 @@ exports.login = async (req, res, next) => {
     }
 };
 
+//Permet de se déconnecter
 exports.logout = (req, res, next) => {
+    //on retire les informations user/token du localstorage
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     res.status(200).json({ message: "Déconnection réussie !" });
 }
 
+//Permet de récupérer un objet User avec l'id
 exports.getOneUser = (req, res, next) => {
     User.findOne({ where: { id: req.params.id } })
         .then(user => res.status(200).json(user))
         .catch(error => res.status(404).json({ error }));
 };
 
+//Permet de modifier les information de profil user
 exports.modifyUser = (req, res, next) => {
-    User.findOne({ where: { id: req.params.id }})
+    var firstNameReg = /[A-Za-zÀ-ÿ](([\-]?[a-zA-Z0-9]+)*)/;
+    var lastNameReg = /[A-Za-z0-9](([\-|\s|\\']?[a-zA-Z0-9]+)*)/;
+    if(req.body.firstName.match(firstNameReg) && req.body.lastName.match(lastNameReg) && req.body.fonction.match(lastNameReg)) {
+        //Si les inputs correspondent aux regex, on trouve le user et modifie les informations de profil
+        User.findOne({ where: { id: req.params.id }})
         .then(user => {
             user.update({
                 firstName: req.body.firstName,
@@ -87,8 +103,12 @@ exports.modifyUser = (req, res, next) => {
             .catch(error => res.status(400).json({ error }));
         })
         .catch(error => res.status(400).json({ error }));
+    } else {
+        res.status(404).json({ message: "Informations de profil invalides !" });
+    }
 }
 
+//Permet de supprimer un compte user
 exports.deleteUser = (req, res, next) => {
     User.destroy({ where: { id: req.params.id }})
         .then(() => res.status(200).json({ message: 'Utilisateur supprimé !'}))
