@@ -70,11 +70,22 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('currentUser');
-    this.authToken = null;
-    this.userId = null;
-    this.currentUserSubject.next(null);
-    this.router.navigate(['login']);
+    return new Promise<any>((resolve, reject) => {
+    this.http.get('http://localhost:3000/auth/logout').subscribe(
+      (res) => {
+          localStorage.removeItem('currentUser');
+          this.authToken = null;
+          this.userId = null;
+          this.currentUserSubject.next(null);
+          this.router.navigate(['login']);
+          resolve(res)
+      },
+      (error) => {
+        reject(error);
+      }
+    );
+    }); 
+    
   }
 
 }

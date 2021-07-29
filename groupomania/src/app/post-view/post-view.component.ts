@@ -53,6 +53,7 @@ export class PostViewComponent implements OnInit, OnDestroy {
       }
     );
     this.postService.getPosts();
+    //On vérifie si le user connecté à les droits administrateur
     this.userId = this.auth.getUserId();
     this.userService.getUserById(this.userId)
       .then((user) => {

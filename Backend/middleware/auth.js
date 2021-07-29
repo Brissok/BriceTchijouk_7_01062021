@@ -5,10 +5,10 @@ localStorage = new LocalStorage('./scratch');
 module.exports = (req, res, next) => {
     try {
         const token = localStorage.getItem('token');
-		console.log(token);
-        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-        const userId = decodedToken.userId;
-        if (req.body.userId && req.body.userId !== userId) {
+        const decodedToken = jwt.verify(token, process.env.TOKEN_KEY);
+        const userId = decodedToken.userId.toString();
+        const user = localStorage.getItem('user');
+        if (user !== userId) {
             throw 'User ID non valable !';
         } else {
             next();

@@ -1,32 +1,18 @@
-import { Subject } from "rxjs/Subject";
 import { User } from "../models/User.model";
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from "@angular/core";
 
 @Injectable()
 export class UserService {
-
-  userSubject = new Subject<User[]>();
-  private users: User[] = [];
   
   constructor(private http: HttpClient) {}
 
-  emitUsers() {
-    this.userSubject.next(this.users.slice());
-  }
-
-  getUsers() {
-    this.http.get<any[]>('http://localhost:3000/auth/profil').subscribe(
-      (response) => {
-        this.userSubject.next(response);
-      },
-      (error) => {
-        this.userSubject.next([]);
-        console.error(error);
-      }
-    );
-  }
-
+  // Fonction pour récupérer les informations d'un user avec son id
+  /**
+   * 
+   * @param {number} id 
+   * @returns {Promise} 
+   */
   getUserById(id: number) {
     return new Promise<any>((resolve, reject) => {
       this.http.get<any>('http://localhost:3000/auth/profil/' + id).subscribe(
@@ -40,6 +26,13 @@ export class UserService {
     });
   }
 
+  //Function pour modifier les information du profil
+  /**
+   * 
+   * @param {number} id 
+   * @param {User} user 
+   * @returns {Promise}
+   */
   modifyUser(id: number, user: User) {
     return new Promise<any>((resolve, reject) => {
         this.http.put<any>('http://localhost:3000/auth/profil/' + id, user).subscribe(
@@ -53,6 +46,12 @@ export class UserService {
     });
   }
 
+  //Fonction pour supprimer un user
+  /**
+   * 
+   * @param {number} id 
+   * @returns {Promise}
+   */
   deleteUser(id: number) {
     return new Promise<any>((resolve, reject) => {
       this.http.delete<any>('http://localhost:3000/auth/profil/' + id).subscribe(

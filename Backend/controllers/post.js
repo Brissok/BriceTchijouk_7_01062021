@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { sequelize, Post, User, Comment } = require('../models');
 
-
+//Permet de créer un post
 exports.createPost = (req, res, next) => {
     var regex = /^[^<>@&"()_$*€£`+=\/;?#]+$/;
     const postObject = JSON.parse(req.body.post);
@@ -15,25 +15,31 @@ exports.createPost = (req, res, next) => {
   
   };
 
+//Permet de récupérer tous les posts
 exports.getAllPosts = (req, res, next) => {
     Post.findAll({ 
-      
+      //On inclue les prénoms et noms des users qui ont créé les posts
       include: [
         { model: User, attributes: ['firstName', 'lastName'] },
+        //On inclue les commentaires correspondants à chaque post
         { model: Comment,
           separate: true,
+          //On inclue les prénoms et noms des users qui ont créé les commentaires classés du plus récent au plus vieux
           include: [ { model: User, attributes: ['firstName', 'lastName'] } ],
           order: [ [ 'createdAt', 'DESC' ] ]
         }
       ],
+      //On classe les posts du plus récent au plus vieux
       order: [[ 'createdAt', 'DESC']]
     })
     .then(posts => res.status(200).json(posts))
     .catch(error => res.status(400).json({ error }));
 };
 
+//Permet de récupérer un post
 exports.getOnePost = (req, res, next) => {
   Post.findOne({ where: { id: req.params.id },
+    //On inclue le prénom et nom du user qui a créé le post et les commentaires avec les prénoms et noms des users qui les ont créé
     include: [
       { model: User, attributes: ['firstName', 'lastName'] },
       { model: Comment, 
@@ -47,6 +53,7 @@ exports.getOnePost = (req, res, next) => {
   .catch(error => res.status(404).json({ error }));
 };
 
+//Permet de modifier un post
 exports.modifyPost = (req, res, next) => {
   var regex = /^[^<>@&"()_$*€£`+=\/;?#]+$/;
   const postObject = req.file ?
@@ -75,6 +82,7 @@ exports.modifyPost = (req, res, next) => {
     }
 };
 
+//Permet de supprimer un post
 exports.deletePost = (req, res, next) => {
   Post.findOne({ where: { id: req.params.id } })
       .then(post => {

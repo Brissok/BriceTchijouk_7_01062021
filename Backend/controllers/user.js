@@ -52,6 +52,7 @@ exports.login = async (req, res, next) => {
                 { expiresIn: '24h' }
             );
             localStorage.setItem("token", token);
+            localStorage.setItem("user", user.id);
             // on renvoi l'id user et le token
 			res.status(200).send({
 				userId: user.id,
@@ -63,8 +64,9 @@ exports.login = async (req, res, next) => {
 };
 
 exports.logout = (req, res, next) => {
-    localStorage.removeItem("token");
-    res.redirect('/');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    res.status(200).json({ message: "Déconnection réussie !" });
 }
 
 exports.getOneUser = (req, res, next) => {
