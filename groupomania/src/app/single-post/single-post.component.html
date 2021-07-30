@@ -41,7 +41,7 @@
           </span>
           <p class="post-date">{{ comment.createdAt | date: 'medium' }}</p>
           <p>{{ comment.text }}</p>
-          <button class="btn btn-warning" (click)="onDeleteCom(comment?.id)" *ngIf="(userId === comment?.UserId) || userId === post?.UserId || isAdmin">Supprimer</button>
+          <button class="btn btn-sm btn-danger" (click)="onDeleteCom(comment?.id)" *ngIf="(userId === comment?.UserId) || userId === post?.UserId || isAdmin">Supprimer</button>
         </li>
       </ng-container>
     </ul>
