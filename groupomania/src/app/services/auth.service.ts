@@ -40,17 +40,20 @@ export class AuthService {
   }
             
   getToken() {
-    if(this.authToken === undefined) {
+    if (localStorage.getItem('currentUser') === null) {
+      return this.authToken;
+    } else {
       return JSON.parse(localStorage.getItem('currentUser')).token;
     }
-      return this.authToken;
+      
   }
 
   getUserId() {
-    if(this.userId === undefined) {
+    if (localStorage.getItem('currentUser') === null) {
+      return this.userId;
+    } else {
       return JSON.parse(localStorage.getItem('currentUser')).userId;
     }
-    return this.userId;
   }
 
   loginUser(email: string, password: string) {
