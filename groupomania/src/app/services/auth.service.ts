@@ -40,11 +40,17 @@ export class AuthService {
   }
             
   getToken() {
-    return this.authToken;
+    if(this.authToken === undefined) {
+      return JSON.parse(localStorage.getItem('currentUser')).token;
+    }
+      return this.authToken;
   }
 
   getUserId() {
-    return JSON.parse(localStorage.getItem('currentUser')).userId;
+    if(this.userId === undefined) {
+      return JSON.parse(localStorage.getItem('currentUser')).userId;
+    }
+    return this.userId;
   }
 
   loginUser(email: string, password: string) {
@@ -70,22 +76,11 @@ export class AuthService {
   }
 
   logout() {
-    return new Promise<any>((resolve, reject) => {
-    this.http.get('http://localhost:3000/auth/logout').subscribe(
-      (res) => {
-          localStorage.removeItem('currentUser');
-          this.authToken = null;
-          this.userId = null;
-          this.currentUserSubject.next(null);
-          this.router.navigate(['login']);
-          resolve(res)
-      },
-      (error) => {
-        reject(error);
-      }
-    );
-    }); 
-    
+    localStorage.removeItem('currentUser');
+    this.authToken = null;
+    this.userId = null;
+    this.currentUserSubject.next(null);
+    this.router.navigate(['login']);
   }
 
 }

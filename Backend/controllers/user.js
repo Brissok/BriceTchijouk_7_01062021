@@ -2,8 +2,6 @@ require('dotenv').config({ path: '../config/.env' });
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { sequelize, User } = require('../models');
-var LocalStorage = require('node-localstorage').LocalStorage,
-localStorage = new LocalStorage('./scratch');
 
 //Permet de créer un compte user
 exports.signup = async (req, res, next) => {
@@ -53,14 +51,12 @@ exports.login = async (req, res, next) => {
             if (!valid) {
                 return res.status(401).json({ message: 'Mot de passe incorrect !' });
             }
-			// on crée un token et on l'enregistre dans le localstorage
+			// on crée un token
 			const token = jwt.sign(
                 { userId: user.id },
                 process.env.TOKEN_KEY,
                 { expiresIn: '24h' }
             );
-            localStorage.setItem("token", token);
-            localStorage.setItem("user", user.id);
             // on renvoi l'id user et le token
 			res.status(200).send({
 				userId: user.id,
@@ -70,14 +66,6 @@ exports.login = async (req, res, next) => {
         .catch(error => res.status(500).json({ error }));
     }
 };
-
-//Permet de se déconnecter
-exports.logout = (req, res, next) => {
-    //on retire les informations user/token du localstorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    res.status(200).json({ message: "Déconnection réussie !" });
-}
 
 //Permet de récupérer un objet User avec l'id
 exports.getOneUser = (req, res, next) => {
